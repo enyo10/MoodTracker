@@ -9,7 +9,7 @@
     tools:context=".Controller.HappyMoodActivity">
 
     <LinearLayout
-        android:id="@+id/happy_mood_layout"
+        android:id="@+id/happyMoodLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4">
@@ -31,10 +31,10 @@
 
 
         <ImageView
-            android:id="@+id/add_happy_smiley"
+            android:id="@+id/addHappyMood"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignTop="@+id/imageHistoric_h"
+            android:layout_alignTop="@+id/imageHistoricHappyMood"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_marginStart="25dp"
@@ -43,7 +43,7 @@
             app:srcCompat="@drawable/ic_note_add_black" />
 
         <ImageView
-            android:id="@+id/imageHistoric_h"
+            android:id="@+id/imageHistoricHappyMood"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentTop="true"

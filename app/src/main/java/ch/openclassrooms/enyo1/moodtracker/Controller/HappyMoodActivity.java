@@ -1,6 +1,7 @@
 package ch.openclassrooms.enyo1.moodtracker.Controller;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,14 +10,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import ch.openclassrooms.enyo1.moodtracker.Model.Helper.OnSwipeTouchListener;
 import ch.openclassrooms.enyo1.moodtracker.R;
 
 public class HappyMoodActivity extends AppCompatActivity{
     private ImageView addSmiley;
     private ImageView historicView;
-    private ImageView happyMoodImage;
-    private LinearLayout linearLayout;
+    private LinearLayout mLinearLayout;
 
 
 
@@ -28,8 +30,6 @@ public class HappyMoodActivity extends AppCompatActivity{
         configureView();
 
 
-
-
     }
 
     /**
@@ -37,31 +37,38 @@ public class HappyMoodActivity extends AppCompatActivity{
      */
     @SuppressLint("ClickableViewAccessibility")
     public void configureView(){
-        happyMoodImage = (ImageView) findViewById(R.id.happyMoodImageView);
-        addSmiley=findViewById(R.id.add_happy_smiley);
-        historicView=findViewById(R.id.imageHistoric_h);
-        linearLayout =findViewById(R.id.happy_mood_layout);
+      // ImageView happyMoodImage =  findViewById(R.id.happyMoodImageView);
+        addSmiley=findViewById(R.id.addHappyMood);
+        historicView=findViewById(R.id.imageHistoricHappyMood);
+        mLinearLayout =findViewById(R.id.happyMoodLayout);
 
-        // Implement it's on touch listener.
-        linearLayout.setOnTouchListener(new View.OnTouchListener() {
-
-
-
+        mLinearLayout.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onSwipeDown() {
+                Toast.makeText(HappyMoodActivity.this, "Down", Toast.LENGTH_SHORT).show();
 
-                // Show an alert dialog.
-                AlertDialog alertDialog = new AlertDialog.Builder(HappyMoodActivity.this).create();
-                alertDialog.setMessage("You touched the Linear Layout.");
-                alertDialog.show();
-
-                // Return false, then android os will still process click event,
-                // if return true, the on click listener will never be triggered.
-                return false;
             }
 
+            @Override
+            public void onSwipeLeft() {
+                Toast.makeText(HappyMoodActivity.this, "Left", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onSwipeUp() {
+                Toast.makeText(HappyMoodActivity.this, "Up", Toast.LENGTH_SHORT).show();
+                Intent intent =new Intent(HappyMoodActivity.this,SuperGoodMoodActivity.class);
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onSwipeRight() {
+                Toast.makeText(HappyMoodActivity.this, "Right", Toast.LENGTH_SHORT).show();
+            }
         });
+
+
 
 
     }
