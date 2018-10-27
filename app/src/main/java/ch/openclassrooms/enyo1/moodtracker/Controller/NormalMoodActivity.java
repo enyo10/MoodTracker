@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import ch.openclassrooms.enyo1.moodtracker.Model.Helper.OnSwipeTouchListener;
 import ch.openclassrooms.enyo1.moodtracker.R;
