@@ -20,6 +20,7 @@
         <activity android:name=".Controller.VeryBadMoodActivity" />
         <activity android:name=".Controller.BadMoodActivity" />
         <activity android:name=".Controller.NormalMoodActivity" />
+        <activity android:name=".Controller.HistoricActivity"></activity>
     </application>
 
 </manifest>

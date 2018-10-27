@@ -15,6 +15,7 @@ public class NormalMoodActivity extends AppCompatActivity {
     private LinearLayout mLinearLayout;
     private ImageView historicView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +43,7 @@ public class NormalMoodActivity extends AppCompatActivity {
 
         });
 
-
-
+        
 
     }
 }
