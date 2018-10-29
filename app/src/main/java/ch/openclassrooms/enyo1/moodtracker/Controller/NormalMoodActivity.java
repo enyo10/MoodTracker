@@ -45,4 +45,40 @@ public class NormalMoodActivity extends AppCompatActivity {
         
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        System.out.println("NormalMoodActivity::onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("NormalMoodActivity::onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        System.out.println("NormalMoodActivity::onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        System.out.println("NormalMoodActivity::onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        System.out.println("NormalMoodActivity::onDestroy()");
+    }
+
 }

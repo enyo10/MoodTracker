@@ -56,4 +56,40 @@ public class VeryBadMoodActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        System.out.println("GameActivity::onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("VeryBadMoodActivity::onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        System.out.println("VeryBadMoodActivity::onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        System.out.println("VeryBadMoodActivity::onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        System.out.println("VeryBadMoodActivity::onDestroy()");
+    }
+
 }

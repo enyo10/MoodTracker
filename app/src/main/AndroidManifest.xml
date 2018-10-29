@@ -9,18 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Controller.HappyMoodActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity android:name=".Controller.SuperGoodMoodActivity" />
         <activity android:name=".Controller.VeryBadMoodActivity" />
         <activity android:name=".Controller.BadMoodActivity" />
         <activity android:name=".Controller.NormalMoodActivity" />
-        <activity android:name=".Controller.HistoricActivity"></activity>
+        <activity android:name=".Controller.HistoricActivity" />
+        <activity android:name=".Controller.HappyMoodActivity" />
+        <activity android:name=".Controller.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

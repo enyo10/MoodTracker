@@ -140,4 +140,40 @@ public class HappyMoodActivity extends AppCompatActivity implements OnClickListe
         startActivity(intent);
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        System.out.println("HappyMoodActivity::onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("HappyMoodActivity::onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        System.out.println("HappyMoodActivity::onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        System.out.println("HappyMoodActivity::onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        System.out.println("HappyMoodActivity::onDestroy()");
+    }
+
 }
