@@ -14,6 +14,7 @@ public class MoodData implements Comparable<MoodData> {
     private String mMessage;
     //The color that represent a given mood.
     private int mColor;
+    private int mImage;
 
     /**
      * A constructor with without parameter.
@@ -27,13 +28,13 @@ public class MoodData implements Comparable<MoodData> {
      * A second constructor with two parameters.
      * @param color,
      *       A mood is triggered with a color.
-     * @param message,
+     * @param image,
      *        A mood hat can have a message that describe it.
      */
 
-    public MoodData(int color, String message) {
+    public MoodData(int color, int image) {
      setColor(color);
-        setMessage(message);
+     setImage(image);
 
 
     }
@@ -65,6 +66,14 @@ public class MoodData implements Comparable<MoodData> {
 
     public void setColor(int color) {
         mColor = color;
+    }
+
+    public int getImage() {
+        return mImage;
+    }
+
+    public void setImage(int image) {
+        mImage = image;
     }
 
     @Override
