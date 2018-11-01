@@ -4,22 +4,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodData;
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodDataManager;
 import ch.openclassrooms.enyo1.moodtracker.R;
 
+import static ch.openclassrooms.enyo1.moodtracker.Controller.MainActivity.BUNDLE_KEY_MOOD_LIST;
+
 public class HistoricActivity extends AppCompatActivity {
 
     private RelativeLayout mRelativeLayoutRaw1,mRelativeLayoutRaw2,mRelativeLayoutRaw3,mRelativeLayoutRaw4, mRelativeLayoutRaw5, mRelativeLayoutRaw6,mRelativeLayoutRaw7;
     private TextView mTextViewRaw1,mTextViewRaw2,mTextViewRaw3,mTextViewRaw4,mTextViewRaw5,mTextViewRaw6,mTextViewRaw7;
-
+    private int []imagesResource=MainActivity.mImagesResources;
+    private int []colorsResource=MainActivity.mColorsResources;
 
     private ImageView mImageView1;
     private ImageView mImageView2;
@@ -31,6 +32,10 @@ public class HistoricActivity extends AppCompatActivity {
 
     private   LinkedList<MoodData> mMoodDataList;
     private MoodData mMoodData;
+    private MoodDataManager mMoodDataManager;
+
+    RelativeLayout.LayoutParams mLayoutParams;
+
 
 
 
@@ -39,7 +44,14 @@ public class HistoricActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historic);
 
+        mMoodDataManager=new MoodDataManager ();
+
+        String jsonString =getIntent ().getStringExtra (BUNDLE_KEY_MOOD_LIST);
+
+        mMoodDataList = mMoodDataManager.jsonToMoodLinkedList (jsonString);
+
         binViews();
+        updateView ();
 
     }
 
@@ -56,6 +68,7 @@ public class HistoricActivity extends AppCompatActivity {
         mRelativeLayoutRaw5 = findViewById(R.id.activity_historic_row5);
         mRelativeLayoutRaw6 = findViewById(R.id.activity_historic_row6);
         mRelativeLayoutRaw7 = findViewById(R.id.activity_historic_row7);
+
 
       // The text view.
         mTextViewRaw1=findViewById(R.id.activity_historic_row1_txt);
@@ -80,48 +93,88 @@ public class HistoricActivity extends AppCompatActivity {
     /**
      * This to update the historic view.
      */
-    private void showMoodData(){
+    private void updateView(){
         // There must be at least one mood data record.
-        MoodData moodData;
+
         int size=mMoodDataList.size();
 
-            moodData=mMoodDataList.get(0);
+        MoodData  moodData=mMoodDataList.get(0);
+
             if(moodData.hasMessage()){
                 mImageView1.setVisibility(View.VISIBLE);
             }
 
-
-
         if(size>=2){
                 mRelativeLayoutRaw2.setVisibility(View.VISIBLE);
+                MoodData moodData1=mMoodDataList.get (1);
 
-            if(moodData.hasMessage()){
+            if(moodData1.hasMessage()){
                 mImageView2.setVisibility(View.VISIBLE);
             }
 
         }
 
         if(size>=3){
-            moodData=mMoodDataList.get(0);
+            mRelativeLayoutRaw3.setVisibility(View.VISIBLE);
+            MoodData moodData2=mMoodDataList.get (2);
 
+            if(moodData2.hasMessage()){
+                mImageView3.setVisibility(View.VISIBLE);
+            }
         }
 
         if(size>=4){
-             moodData=mMoodDataList.get(0);
+            mRelativeLayoutRaw4.setVisibility(View.VISIBLE);
+            MoodData moodData4=mMoodDataList.get (3);
+
+            if(moodData4.hasMessage()){
+                mImageView4.setVisibility(View.VISIBLE);
+            }
 
         }
         if(size>=5){
-             moodData=mMoodDataList.get(0);
+            mRelativeLayoutRaw5.setVisibility(View.VISIBLE);
+            MoodData moodData5=mMoodDataList.get (4);
+
+            if(moodData5.hasMessage()){
+                mImageView5.setVisibility(View.VISIBLE);
+            }
 
         }
         if(size>=6){
-            moodData=mMoodDataList.get(0);
+            mRelativeLayoutRaw6.setVisibility(View.VISIBLE);
+            MoodData moodData6=mMoodDataList.get (5);
+
+            if(moodData6.hasMessage()){
+                mImageView6.setVisibility(View.VISIBLE);
+            }
+
 
         }
         if(size>=7) {
-             moodData=mMoodDataList.get(0);
+            mRelativeLayoutRaw7.setVisibility(View.VISIBLE);
+            MoodData moodData7=mMoodDataList.get (6);
+
+            if(moodData7.hasMessage()){
+                mImageView7.setVisibility(View.VISIBLE);
+            }
+
 
         }
+
+    }
+
+    public void initView(){
+
+       int w= mRelativeLayoutRaw7.getWidth ();
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                (w*2)/3,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT*(1/5), RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 
     }
 

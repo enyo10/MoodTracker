@@ -6,9 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class to manage the mood data. We can put and remove data.
@@ -33,16 +32,15 @@ public class MoodDataManager {
      */
 
     public LinkedList<MoodData> addData(LinkedList<MoodData>list, MoodData moodData){
-        LinkedList<MoodData>mDataList=list;
 
-        if(mDataList.size()<=MAX_MOOD_DATA){
+        if(list.size()<=MAX_MOOD_DATA){
             list.add(moodData); }
 
             else {
-            mDataList.removeFirst();
-            mDataList.add(moodData);
+            list.removeFirst();
+            list.add(moodData);
         }
-        return mDataList;
+        return list;
     }
 
     /**
@@ -69,8 +67,9 @@ public class MoodDataManager {
         Gson gson=new Gson();
 
         Type founderListType = new TypeToken<LinkedList<MoodData>>(){}.getType();
-        LinkedList<MoodData> moodDataList = gson.fromJson(json, founderListType);
 
-        return moodDataList;
+        return gson.fromJson(json, founderListType);
     }
+
+
 }

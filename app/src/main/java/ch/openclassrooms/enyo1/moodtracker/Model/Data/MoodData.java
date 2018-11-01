@@ -1,20 +1,16 @@
 package ch.openclassrooms.enyo1.moodtracker.Model.Data;
 
-import java.util.Calendar;
-import java.util.Date;
-
 /**
  * This class represent a mood.
  * A mood object has some values, that describe it.
  */
-public class MoodData implements Comparable<MoodData> {
-    // The date that the mood object is created.
-    private static final Date sDate = Calendar.getInstance().getTime();
+public class MoodData {
     // The message: the reason for the mood.
-    private String mMessage;
+    private String mMessage="";
     //The color that represent a given mood.
     private int mColor;
     private int mImage;
+    private int mResourceId;
 
     /**
      * A constructor with without parameter.
@@ -26,31 +22,23 @@ public class MoodData implements Comparable<MoodData> {
 
     /**
      * A second constructor with two parameters.
-     * @param color,
+     * @param resourceId,
      *       A mood is triggered with a color.
-     * @param image,
-     *        A mood hat can have a message that describe it.
      */
 
-    public MoodData(int color, int image) {
-     setColor(color);
-     setImage(image);
+    public MoodData(int resourceId) {
 
-
+     setResourceId(resourceId);
     }
 
     /**
      * This method to check if the mood object has a message.
-     * @return
+     * @return boolean,
+     *
      */
     public boolean hasMessage(){
         return !mMessage.isEmpty();
     }
-
-    public Date getDate() {
-        return sDate;
-    }
-
 
     public String getMessage() {
         return mMessage;
@@ -76,14 +64,17 @@ public class MoodData implements Comparable<MoodData> {
         mImage = image;
     }
 
-    @Override
-    public int compareTo(MoodData o) {
-        return sDate.compareTo(o.getDate());
+    public int getResourceId() {
+        return mResourceId;
+    }
+
+    public void setResourceId(int resourceId) {
+        mResourceId = resourceId;
     }
 
 
     @Override
     public String toString() {
-        return "[ Date : " +this.sDate + " , Message: " + getMessage() +"]";
+        return "[   Message: " + getMessage () + "]";
     }
 }

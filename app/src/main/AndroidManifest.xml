@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.openclassrooms.enyo1.moodtracker">
+    <!-- permission required to use Alarm Manager -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -9,12 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Controller.SuperGoodMoodActivity" />
-        <activity android:name=".Controller.VeryBadMoodActivity" />
-        <activity android:name=".Controller.BadMoodActivity" />
-        <activity android:name=".Controller.NormalMoodActivity" />
-        <activity android:name=".Controller.HistoricActivity" />
-        <activity android:name=".Controller.HappyMoodActivity" />
         <activity android:name=".Controller.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,6 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".Controller.HistoricActivity" />
+
+        <!-- Register the Alarm Receiver -->
+        <!--<receiver android:name=".Controller.AlarmReceiver"/>-->
+
+        <receiver android:name=".Controller.MainActivity$AlarmReceiverOne" >
+        </receiver>
+
+
+
     </application>
 
 </manifest>

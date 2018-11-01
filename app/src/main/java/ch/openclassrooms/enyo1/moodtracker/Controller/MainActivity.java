@@ -1,6 +1,10 @@
 package ch.openclassrooms.enyo1.moodtracker.Controller;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +12,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodData;
@@ -22,7 +28,11 @@ import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodDataManager;
 import ch.openclassrooms.enyo1.moodtracker.Model.Helper.OnSwipeTouchListener;
 import ch.openclassrooms.enyo1.moodtracker.R;
 
+
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     private LinearLayout mainLinearLayout;
     private LinearLayout moodImageViewLayout;
@@ -30,48 +40,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView historicImageView;
     private ImageView addImageView;
 
-    private static int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy,
-                                      R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
+    public static final int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy, R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
 
-    private  static int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey,
-            R.color.cornflower_blue_65};
+    public  static final int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65};
 
-    private static int currentView;
-    private MoodData currentMoodData;
+    private static int currentMoodId;
+    private static MoodData currentMoodData;
+    private MoodDataManager mMoodDataManager;
 
-    private SharedPreferences mSharedPreferences;
-    private static final String PREF_KEY_MOOD_LiST="PREF_KEY_MOOD_LIST";
+    private static SharedPreferences mSharedPreferences;
+    private static final String PREF_KEY_MOOD_LIST="PREF_KEY_MOOD_LIST";
     private static final String BUNDLE_KEY_CURRENT_MOOD="CURRENT_MOOD";
+    public static final String BUNDLE_KEY_MOOD_LIST="BUNDLE_KEY_MOOD_LIST";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent=getIntent ();
+        if(intent.getStringExtra ("bonjour")=="bonjour"){
+            saveData ();
+        }
+
         mSharedPreferences= getPreferences(MODE_PRIVATE);
+        mMoodDataManager=new MoodDataManager ();
+
 
         bindViews();
 
         if(savedInstanceState!=null){
-            currentView=savedInstanceState.getInt(BUNDLE_KEY_CURRENT_MOOD);
+            currentMoodId=savedInstanceState.getInt(BUNDLE_KEY_CURRENT_MOOD);
 
         }else {
-            currentView=0;
+            currentMoodId=0;
 
         }
-        mainLinearLayout.setBackgroundColor(getResources().getColor(mColorsResources[currentView]));
-        moodImageView.setImageResource(mImagesResources[currentView]);
+        // Initialise the default mood data.
+        currentMoodData=new MoodData (currentMoodId);
 
-        showViews();
+        updateCurrentView (currentMoodData.getResourceId ());
+
         historicImageView.setOnClickListener(this);
         addImageView.setOnClickListener(this);
+
+        showViews();
+
+        scheduleAlarm();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(BUNDLE_KEY_CURRENT_MOOD,currentView);
+        outState.putInt(BUNDLE_KEY_CURRENT_MOOD,currentMoodId);
         super.onSaveInstanceState(outState);
     }
+
 
     private void bindViews(){
         mainLinearLayout    = findViewById(R.id.activityMainLayout);
@@ -79,6 +103,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         moodImageViewLayout = findViewById(R.id.happyMoodLayout);
         historicImageView   = findViewById(R.id.historicImage);
         addImageView        = findViewById(R.id.addMoodImage);
+    }
+
+    /**
+     *
+     * @param moodId,
+     *       The id of the actual mood.
+     */
+    public void updateCurrentView(int moodId){
+
+        mainLinearLayout.setBackgroundColor(getResources().getColor(mColorsResources[moodId]));
+        moodImageView.setImageResource(mImagesResources[moodId]);
+
     }
 
     /**
@@ -91,23 +127,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSwipeDown() {
 
-                if (currentView>0)
-                    currentView--;
-                mainLinearLayout.setBackgroundColor(getResources().getColor(mColorsResources[currentView]));
-                moodImageView.setImageResource(mImagesResources[currentView]);
-                Toast.makeText(MainActivity.this, "Down :"+currentView , Toast.LENGTH_SHORT).show();
+                if (currentMoodId>0)
+                    currentMoodId--;
+                updateCurrentView (currentMoodId);
+                Toast.makeText(MainActivity.this, "Down :currentMoodId -->"+currentMoodId , Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onSwipeUp() {
 
-                if (currentView<4)
-                    currentView++;
-                mainLinearLayout.setBackgroundColor(getResources().getColor(mColorsResources[currentView]));
-                moodImageView.setImageResource(mImagesResources[currentView]);
-                Toast.makeText(MainActivity.this, "Down :"+currentView , Toast.LENGTH_SHORT).show();
+                if (currentMoodId<4)
+                    currentMoodId++;
+                updateCurrentView (currentMoodId);
+                Toast.makeText(MainActivity.this, "Down :"+currentMoodId , Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     @Override
@@ -125,12 +160,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void addCustomDialogBox(){
 
         LayoutInflater layoutInflater =getLayoutInflater();
-        View view =layoutInflater.inflate(R.layout.user_input_dialog_box,null);
+        View view;
+        view = layoutInflater.inflate(R.layout.user_input_dialog_box,null);
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this);
         final EditText userInputDialogEditText =  view.findViewById(R.id.userInputDialog);
 
         alertDialogBuilderUserInput.setView(view);
-
 
         alertDialogBuilderUserInput
 
@@ -139,13 +174,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton("Valider", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialogBox, int id) {
-                        //To Do
                     String txt=  userInputDialogEditText.getText().toString();
 
                         Toast.makeText(MainActivity.this, "Value :"+txt, Toast.LENGTH_SHORT).show();
 
-                        currentMoodData =new MoodData();
-                        currentMoodData.setColor(currentView);
+                        currentMoodData =new MoodData(currentMoodId);
                         currentMoodData.setMessage(txt);
                     }
                 })
@@ -157,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 dialogBox.cancel();
                             }
-
                         });
 
         AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
@@ -166,33 +198,105 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * This method start the historic activity.
+     * The method send the list of mood data to the historic activity.
      */
     public void toHistoricActivity(){
+        String jsonString =mSharedPreferences.getString (PREF_KEY_MOOD_LIST,null);
 
         Intent intent=new Intent(MainActivity.this,HistoricActivity.class);
+        intent.putExtra (BUNDLE_KEY_MOOD_LIST,jsonString);
         startActivity(intent);
     }
 
     /**
+     * This method to schedule the alarm.
+     */
+
+    public void scheduleAlarm()
+    {
+        // time at which alarm will be scheduled here alarm is scheduled at 5 min from current time,
+        // we fetch  the current time in milliseconds and added 5 time
+        // i.e. 5*60*1000= 86,400,000   milliseconds in a 5 min
+        /*Long time = new GregorianCalendar().getTimeInMillis()+5*60*1000;
+
+
+        Long time = new GregorianCalendar().getTimeInMillis()+5*60*1000;
+
+
+        Intent intentAlarm = new Intent(this, AlarmReceiver.class);
+        intentAlarm.putExtra ("currentViewId", currentMoodData.getResourceId ());
+        intentAlarm.putExtra("message",currentMoodData.getMessage ());
+
+
+        // create the object
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        //set the alarm for particular time
+        alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+        Toast.makeText(this, "Alarm Scheduled for 5 min", Toast.LENGTH_LONG).show();*/
+
+        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiverOne.class);
+        intent.putExtra ("currentViewId", currentMoodData.getResourceId ());
+
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+// setRepeating() lets you specify a precise custom interval--in this case,
+// 2 minutes.
+
+        Long time = new GregorianCalendar().getTimeInMillis()+2*60*1000;
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, time,
+                1000 * 60 * 2, alarmIntent);
+        Toast.makeText(this, "Alarm Scheduled for 2 min", Toast.LENGTH_LONG).show();
+
+
+    }
+
+    /**
      * This method to save the given data.
-     * @param moodData,
      *        The data to be stored.
      */
-    private void saveData(MoodData moodData){
-        MoodDataManager moodDataManager=new MoodDataManager();
-        LinkedList<MoodData>moodDataList=null;
+    public static void saveData(){
+        MoodDataManager mMoodDataManager=new MoodDataManager ();
 
-        String gson= mSharedPreferences.getString(PREF_KEY_MOOD_LiST,null);
-        if(gson!=null) {
-             moodDataList = moodDataManager.jsonToMoodLinkedList(gson);
+        LinkedList<MoodData> moodDataList;
+
+        String jsonString= mSharedPreferences.getString(PREF_KEY_MOOD_LIST,null);
+        if(jsonString!=null) {
+            moodDataList = mMoodDataManager.jsonToMoodLinkedList(jsonString);
 
         }else {
             moodDataList=new LinkedList<>();
         }
-        moodDataList= moodDataManager.addData(moodDataList,moodData);
+        moodDataList= mMoodDataManager.addData(moodDataList,currentMoodData);
 
-        String toBeStored=moodDataManager.objectToJson(moodDataList);
+        String toBeStored=mMoodDataManager.objectToJson(moodDataList);
+        mSharedPreferences.edit().putString(PREF_KEY_MOOD_LIST, toBeStored).apply();
+        Log.e("my" ,""+currentMoodId);
 
-        mSharedPreferences.edit().putString(PREF_KEY_MOOD_LiST, toBeStored).apply();
+        // Initialise the default mood data.
+        currentMoodId = 0;
+
+        Log.e("my" ,""+currentMoodId);
+
+
     }
+
+    public static class AlarmReceiverOne extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            Log.d("-", "Receiver4");
+            saveData ();
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume ();
+
+    }
+
+
 }
