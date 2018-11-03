@@ -11,6 +11,7 @@ public class MoodData {
     private int mColor;
     private int mImage;
     private int mResourceId;
+    private int mWidthRatio;
 
     /**
      * A constructor with without parameter.
@@ -27,8 +28,8 @@ public class MoodData {
      */
 
     public MoodData(int resourceId) {
-
      setResourceId(resourceId);
+     setWidthRatio (resourceId);
     }
 
     /**
@@ -72,6 +73,13 @@ public class MoodData {
         mResourceId = resourceId;
     }
 
+    public int getWidthRatio() {
+        return mWidthRatio;
+    }
+
+    public void setWidthRatio(int widthRatio) {
+        mWidthRatio = widthRatio;
+    }
 
     @Override
     public String toString() {

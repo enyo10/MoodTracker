@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView addImageView;
 
     public static final int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy, R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
-
-    public  static final int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65};
+    public static final int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65};
+    public static final int []values={4,5,1,2,3};
 
     private static int currentMoodId;
     private static MoodData currentMoodData;
@@ -59,14 +59,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent=getIntent ();
-        if(intent.getStringExtra ("bonjour")=="bonjour"){
-            saveData ();
-        }
+       /* Intent intent=getIntent ();
+        if(intent!=null){
+            String message =intent.getStringExtra ("message");
 
+          if((message.equals("update") ))
+            saveData ();
+         }*/
         mSharedPreferences= getPreferences(MODE_PRIVATE);
         mMoodDataManager=new MoodDataManager ();
-
 
         bindViews();
 
@@ -96,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onSaveInstanceState(outState);
     }
 
-
+    /**
+     *
+     */
     private void bindViews(){
         mainLinearLayout    = findViewById(R.id.activityMainLayout);
         moodImageView       = findViewById(R.id.happyMoodImageView);
@@ -111,9 +114,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *       The id of the actual mood.
      */
     public void updateCurrentView(int moodId){
+        currentMoodData=new MoodData (moodId);
 
-        mainLinearLayout.setBackgroundColor(getResources().getColor(mColorsResources[moodId]));
-        moodImageView.setImageResource(mImagesResources[moodId]);
+        mainLinearLayout.setBackgroundColor(getResources().getColor(mColorsResources[currentMoodData.getResourceId ()]));
+        moodImageView.setImageResource(mImagesResources[currentMoodData.getResourceId ()]);
 
     }
 
@@ -178,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         Toast.makeText(MainActivity.this, "Value :"+txt, Toast.LENGTH_SHORT).show();
 
-                        currentMoodData =new MoodData(currentMoodId);
+                       // currentMoodData =new MoodData(currentMoodId);
                         currentMoodData.setMessage(txt);
                     }
                 })
@@ -194,6 +198,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
         alertDialogAndroid.show();
+    }
+
+    /**
+     * This method to save the given data.
+     *        The data to be stored.
+     */
+    public static void saveData(){
+        MoodDataManager mMoodDataManager=new MoodDataManager ();
+
+        LinkedList<MoodData> moodDataList;
+
+        String jsonString= mSharedPreferences.getString(PREF_KEY_MOOD_LIST,null);
+        if(jsonString!=null) {
+            moodDataList = mMoodDataManager.jsonToMoodLinkedList(jsonString);
+
+        }else {
+            moodDataList=new LinkedList<>();
+        }
+        moodDataList= mMoodDataManager.addData(moodDataList,currentMoodData);
+
+        String toBeStored=mMoodDataManager.objectToJson(moodDataList);
+        mSharedPreferences.edit().putString(PREF_KEY_MOOD_LIST, toBeStored).apply();
+        Log.e("System my " ,""+currentMoodId);
+
+        // Initialise the default mood data.
+        currentMoodId = 0;
+        currentMoodData=new MoodData (0);
+       // updateCurrentView (currentMoodId);
+
+        Log.e("System --my :" ,""+currentMoodId);
+
+
     }
 
     /**
@@ -254,49 +290,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    /**
-     * This method to save the given data.
-     *        The data to be stored.
-     */
-    public static void saveData(){
-        MoodDataManager mMoodDataManager=new MoodDataManager ();
 
-        LinkedList<MoodData> moodDataList;
-
-        String jsonString= mSharedPreferences.getString(PREF_KEY_MOOD_LIST,null);
-        if(jsonString!=null) {
-            moodDataList = mMoodDataManager.jsonToMoodLinkedList(jsonString);
-
-        }else {
-            moodDataList=new LinkedList<>();
-        }
-        moodDataList= mMoodDataManager.addData(moodDataList,currentMoodData);
-
-        String toBeStored=mMoodDataManager.objectToJson(moodDataList);
-        mSharedPreferences.edit().putString(PREF_KEY_MOOD_LIST, toBeStored).apply();
-        Log.e("my" ,""+currentMoodId);
-
-        // Initialise the default mood data.
-        currentMoodId = 0;
-
-        Log.e("my" ,""+currentMoodId);
-
-
-    }
 
     public static class AlarmReceiverOne extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
-            Log.d("-", "Receiver4");
+            Log.d("System", "Receiver --Send");
             saveData ();
+
+
         }
     }
 
-
     @Override
-    protected void onResume() {
-        super.onResume ();
+    protected void onRestart() {
+        super.onRestart ();
+
+        System.out.println("MainActivity::onRestart()");
+
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        System.out.println("MainActivity::onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("MainActivity::onStart()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        System.out.println("MainActivity::onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        System.out.println("MainActivity::onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        System.out.println("MainActivity::onDestroy()");
+    }
 
 }
