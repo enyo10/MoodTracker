@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +23,10 @@ import android.widget.Toast;
 
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
+import java.util.Observable;
+import java.util.Observer;
 
+import ch.openclassrooms.enyo1.moodtracker.Model.Data.AlarmBroadcastObserver;
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodData;
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodDataManager;
 import ch.openclassrooms.enyo1.moodtracker.Model.Helper.OnSwipeTouchListener;
@@ -30,7 +34,7 @@ import ch.openclassrooms.enyo1.moodtracker.R;
 
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements Observer,View.OnClickListener{
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
@@ -39,10 +43,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView moodImageView;
     private ImageView historicImageView;
     private ImageView addImageView;
+    public AlarmBroadcastObserver mAlarmBroadcastObserver;
 
     public static final int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy, R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
     public static final int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65};
     public static final int []values={4,5,1,2,3};
+    public static final int  []rings={R.raw.happy,R.raw.super_happy,R.raw.sad,R.raw.disappointed,R.raw.normal};
 
     private static int currentMoodId;
     private static MoodData currentMoodData;
@@ -54,20 +60,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String BUNDLE_KEY_MOOD_LIST="BUNDLE_KEY_MOOD_LIST";
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       /* Intent intent=getIntent ();
-        if(intent!=null){
-            String message =intent.getStringExtra ("message");
 
-          if((message.equals("update") ))
-            saveData ();
-         }*/
         mSharedPreferences= getPreferences(MODE_PRIVATE);
         mMoodDataManager=new MoodDataManager ();
+
+        // Add this activity to the observer list
+       /* mAlarmBroadcastObserver = new AlarmBroadcastObserver();
+        mAlarmBroadcastObserver.addObserver(this);*/
+
+       AlarmReceiver.sAlarmBroadcastObserver.addObserver (this);
 
         bindViews();
 
@@ -89,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         showViews();
 
         scheduleAlarm();
+
+        MediaPlayer ring= MediaPlayer.create(MainActivity.this,R.raw.disappointed);
+        ring.start();
     }
 
     @Override
@@ -98,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *
+     *This method to bind the views.
      */
     private void bindViews(){
         mainLinearLayout    = findViewById(R.id.activityMainLayout);
@@ -135,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     currentMoodId--;
                 updateCurrentView (currentMoodId);
                 Toast.makeText(MainActivity.this, "Down :currentMoodId -->"+currentMoodId , Toast.LENGTH_SHORT).show();
+                playMusic (rings[currentMoodId]);
             }
 
             @Override
@@ -144,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     currentMoodId++;
                 updateCurrentView (currentMoodId);
                 Toast.makeText(MainActivity.this, "Down :"+currentMoodId , Toast.LENGTH_SHORT).show();
+                playMusic (rings[currentMoodId]);
             }
         });
 
@@ -153,9 +165,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if(addImageView==v)
             addCustomDialogBox();
-        if(historicImageView==v){
-            toHistoricActivity();
-        }
+
+        if(historicImageView==v)
+             toHistoricActivity();
     }
 
     /**
@@ -204,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * This method to save the given data.
      *        The data to be stored.
      */
-    public static void saveData(){
+    public  void saveData(){
         MoodDataManager mMoodDataManager=new MoodDataManager ();
 
         LinkedList<MoodData> moodDataList;
@@ -225,9 +237,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Initialise the default mood data.
         currentMoodId = 0;
         currentMoodData=new MoodData (0);
-       // updateCurrentView (currentMoodId);
+        updateCurrentView (currentMoodId);
 
-        Log.e("System --my :" ,""+currentMoodId);
+        Log.e(" info :" ," Data is save ");
 
 
     }
@@ -250,30 +262,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void scheduleAlarm()
     {
-        // time at which alarm will be scheduled here alarm is scheduled at 5 min from current time,
-        // we fetch  the current time in milliseconds and added 5 time
-        // i.e. 5*60*1000= 86,400,000   milliseconds in a 5 min
-        /*Long time = new GregorianCalendar().getTimeInMillis()+5*60*1000;
-
-
-        Long time = new GregorianCalendar().getTimeInMillis()+5*60*1000;
-
-
-        Intent intentAlarm = new Intent(this, AlarmReceiver.class);
-        intentAlarm.putExtra ("currentViewId", currentMoodData.getResourceId ());
-        intentAlarm.putExtra("message",currentMoodData.getMessage ());
-
-
-        // create the object
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        //set the alarm for particular time
-        alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(this, "Alarm Scheduled for 5 min", Toast.LENGTH_LONG).show();*/
-
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiverOne.class);
-        intent.putExtra ("currentViewId", currentMoodData.getResourceId ());
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra ("ch.enyo.EXTRA_DATA", currentMoodData.getResourceId ());
 
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -290,15 +281,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        saveData ();
+
+    }
 
 
-    public static class AlarmReceiverOne extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent) {
-            Log.d("System", "Receiver --Send");
-            saveData ();
+    /**
+     * This method is to play the music, according to the mood image.
+     * @param musicId,
+     *        the id off the music to be play. We have it from resources array call, values.
+     */
+    public void playMusic(int musicId){
 
-
-        }
+        MediaPlayer ring= MediaPlayer.create(MainActivity.this,musicId);
+        ring.start();
     }
 
     @Override
@@ -306,8 +304,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onRestart ();
 
         System.out.println("MainActivity::onRestart()");
-
-
     }
 
     @Override
@@ -344,5 +340,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         System.out.println("MainActivity::onDestroy()");
     }
+
 
 }

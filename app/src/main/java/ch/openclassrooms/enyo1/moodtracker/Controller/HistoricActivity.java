@@ -53,7 +53,7 @@ public class HistoricActivity extends AppCompatActivity {
         mMoodDataManager=new MoodDataManager ();
 
         String jsonString =getIntent ().getStringExtra (BUNDLE_KEY_MOOD_LIST);
-
+        if(jsonString!=null)
         mMoodDataList = mMoodDataManager.jsonToMoodLinkedList (jsonString);
 
         binViews();
@@ -128,14 +128,17 @@ public class HistoricActivity extends AppCompatActivity {
     public void updateView1(){
         Display display = getWindowManager().getDefaultDisplay();
         int screenWidth = display.getWidth();
-        int dataListSize =mMoodDataList.size ();
         int color;
         int ratio;
+        int dataListSize;
+        MoodData moodData;
 
-         MoodData moodData;
+        if(mMoodDataList!=null) {
+            dataListSize = mMoodDataList.size ();
 
-        if(dataListSize!=0){
-            for(int i=0;i<dataListSize;i++){
+
+            if(dataListSize!=0){
+                for(int i=0;i<dataListSize;i++){
                 moodData= mMoodDataList.get (i);
                 Log.e ("System ", "color " +moodData.getColor ());
 
@@ -161,7 +164,7 @@ public class HistoricActivity extends AppCompatActivity {
             }
         }
 
-
+        }
 
 
     }
@@ -251,12 +254,8 @@ public class HistoricActivity extends AppCompatActivity {
                 mImageView7.setVisibility(View.VISIBLE);
             }
 
-
         }
-
     }
-
-
 
     @Override
     protected void onStart() {

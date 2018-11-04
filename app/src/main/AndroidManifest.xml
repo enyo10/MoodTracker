@@ -21,11 +21,14 @@
         <activity android:name=".Controller.HistoricActivity" />
 
         <!-- Register the Alarm Receiver -->
-        <!--<receiver android:name=".Controller.AlarmReceiver"/>-->
+        <receiver android:name=".Controller.AlarmReceiver">
 
-        <receiver android:name=".Controller.MainActivity$AlarmReceiverOne" >
+        </receiver >
+
+
+        <!--<receiver android:name=".Controller.MainActivity$AlarmReceiverOne" >
         </receiver>
-
+-->
 
 
     </application>
