@@ -20,13 +20,11 @@ import ch.openclassrooms.enyo1.moodtracker.R;
 
 import static ch.openclassrooms.enyo1.moodtracker.Controller.MainActivity.BUNDLE_KEY_MOOD_LIST;
 
-public class HistoricActivity extends AppCompatActivity {
+public class HistoricActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RelativeLayout mRelativeLayoutRaw1,mRelativeLayoutRaw2,mRelativeLayoutRaw3,mRelativeLayoutRaw4, mRelativeLayoutRaw5, mRelativeLayoutRaw6,mRelativeLayoutRaw7;
     private ArrayList<RelativeLayout>mRelativeLayouts;
     private TextView mTextViewRaw1,mTextViewRaw2,mTextViewRaw3,mTextViewRaw4,mTextViewRaw5,mTextViewRaw6,mTextViewRaw7;
-    private int []imagesResource=MainActivity.mImagesResources;
-    private int []colorsResource=MainActivity.mColorsResources;
 
     private ImageView mImageView1;
     private ImageView mImageView2;
@@ -35,14 +33,13 @@ public class HistoricActivity extends AppCompatActivity {
     private ImageView mImageView5;
     private ImageView mImageView6;
     private ImageView mImageView7;
+
     private ArrayList<ImageView>mImageViews;
 
     private   LinkedList<MoodData> mMoodDataList;
     private MoodDataManager mMoodDataManager;
-
-  //  RelativeLayout.LayoutParams mLayoutParams;
-
-
+    private ImageView currentImageView ;
+    private MoodData currentMoodData;
 
 
     @Override
@@ -57,11 +54,9 @@ public class HistoricActivity extends AppCompatActivity {
         mMoodDataList = mMoodDataManager.jsonToMoodLinkedList (jsonString);
 
         binViews();
-        updateView1();
+        updateView();
 
     }
-
-
 
     /**
      * This method to bind the views.
@@ -125,7 +120,11 @@ public class HistoricActivity extends AppCompatActivity {
 
     }
 
-    public void updateView1(){
+    /**
+     * This method to update the list of the historic.
+     */
+
+    public void updateView(){
         Display display = getWindowManager().getDefaultDisplay();
         int screenWidth = display.getWidth();
         int color;
@@ -145,117 +144,32 @@ public class HistoricActivity extends AppCompatActivity {
                 Log.e ("Sys","ResourceId "+moodData.getResourceId ());
                  color=MainActivity.mColorsResources[moodData.getResourceId ()];
                  ratio=MainActivity.values[moodData.getResourceId ()];
+
                 if(moodData.hasMessage()){
-
                     mImageViews.get (i).setVisibility(View.VISIBLE);
-                    mImageViews.get (i).setOnClickListener (new View.OnClickListener () {
-
-                        @Override
-                        public void onClick(View v) {
-                           //Toast.makeText(HistoricActivity.this, moodData.getMessage (), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    mImageViews.get (i).setOnClickListener (this);
                 }
 
                mRelativeLayouts.get (i).setBackgroundColor(getResources().getColor(color));
                mRelativeLayouts.get(i).getLayoutParams().width=ratio*screenWidth/5;
                mRelativeLayouts.get (i).setVisibility (View.VISIBLE);
-
             }
         }
-
         }
-
 
     }
 
-    /**
-     * This to update the historic view.
-     */
-    private void updateView(){
-        // There must be at least one mood data record.
-
-        Display display = getWindowManager().getDefaultDisplay();
-        int screenWidth = display.getWidth();
-
-        int size=mMoodDataList.size();
-
-        if(size<=1){
-
-        MoodData  moodData=mMoodDataList.get(0);
-
-            if(moodData.hasMessage()){
-                mImageView1.setVisibility(View.VISIBLE);
-            }
-        }
-
-        if(size>=2){
-
-            final RelativeLayout relavtiveLeft = mRelativeLayoutRaw2;
-            ViewGroup.LayoutParams homeLayoutsparams = relavtiveLeft .getLayoutParams();
-            homeLayoutsparams.width = screenWidth / 2;
-
-               mRelativeLayoutRaw2.setVisibility(View.VISIBLE);
-               mRelativeLayoutRaw2.setLayoutParams (homeLayoutsparams);
-                mRelativeLayoutRaw2.setBackgroundColor(getResources().getColor(R.color.warm_grey));
-                MoodData moodData1=mMoodDataList.get (1);
-
-            if(moodData1.hasMessage()){
-                mImageView2.setVisibility(View.VISIBLE);
-            }
-
-        }
-
-        if(size>=3){
-            MoodData moodData2=mMoodDataList.get (2);
-            mRelativeLayoutRaw3.setVisibility(View.VISIBLE);
-            mRelativeLayoutRaw3.getLayoutParams().width=screenWidth/3;
-            mRelativeLayoutRaw3.setBackgroundColor (getResources ().getColor (R.color.colorPrimary));
+    @Override
+    public void onClick(View v) {
 
 
-            if(moodData2.hasMessage()){
-                mImageView3.setVisibility(View.VISIBLE);
-            }
-        }
+        int index = Integer.parseInt (v.getTag ().toString ());
+        MoodData moodData=mMoodDataList.get (index);
 
-        if(size>=4){
-            mRelativeLayoutRaw4.setVisibility(View.VISIBLE);
-            MoodData moodData4=mMoodDataList.get (3);
+        Toast.makeText(HistoricActivity.this, ""+ moodData.getMessage (), Toast.LENGTH_LONG).show();
 
-            if(moodData4.hasMessage()){
-                mImageView4.setVisibility(View.VISIBLE);
-            }
-
-        }
-        if(size>=5){
-            mRelativeLayoutRaw5.setVisibility(View.VISIBLE);
-            MoodData moodData5=mMoodDataList.get (4);
-
-            if(moodData5.hasMessage()){
-                mImageView5.setVisibility(View.VISIBLE);
-            }
-
-        }
-        if(size>=6){
-            mRelativeLayoutRaw6.setVisibility(View.VISIBLE);
-            MoodData moodData6=mMoodDataList.get (5);
-
-            if(moodData6.hasMessage()){
-                mImageView6.setVisibility(View.VISIBLE);
-            }
-
-
-        }
-        if(size>=7) {
-            mRelativeLayoutRaw7.setVisibility(View.VISIBLE);
-            MoodData moodData7=mMoodDataList.get (6);
-
-            if(moodData7.hasMessage()){
-                mImageView7.setVisibility(View.VISIBLE);
-            }
-
-        }
     }
+
 
     @Override
     protected void onStart() {
@@ -291,5 +205,6 @@ public class HistoricActivity extends AppCompatActivity {
 
         System.out.println("HistoricActivity::onDestroy()");
     }
+
 
 }

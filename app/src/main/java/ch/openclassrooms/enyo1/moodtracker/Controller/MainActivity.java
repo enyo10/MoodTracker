@@ -66,13 +66,8 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         mSharedPreferences= getPreferences(MODE_PRIVATE);
         mMoodDataManager=new MoodDataManager ();
-
-        // Add this activity to the observer list
-       /* mAlarmBroadcastObserver = new AlarmBroadcastObserver();
-        mAlarmBroadcastObserver.addObserver(this);*/
 
        AlarmReceiver.sAlarmBroadcastObserver.addObserver (this);
 
@@ -133,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
 
     /**
      * This method to configure the view.
+     * By swiping, the image change.
      */
     @SuppressLint("ClickableViewAccessibility")
     public void showViews(){
