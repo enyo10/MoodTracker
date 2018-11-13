@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,8 +37,6 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
 
     private   LinkedList<MoodData> mMoodDataList;
     private MoodDataManager mMoodDataManager;
-    private ImageView currentImageView ;
-    private MoodData currentMoodData;
 
 
     @Override
@@ -55,7 +52,6 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
 
         binViews();
         updateView();
-
     }
 
     /**
