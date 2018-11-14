@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">MoodTracker</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="row_one">"Il y a une semaine "</string>
+    <string name="row_two">"Il y a six jours "</string>
+    <string name="row_three">"Il y a cinq jours "</string>
+    <string name="row_four">"Il y a quatre jours"</string>
+    <string name="row_five">"Il y a trois jours "</string>
+    <string name="row_six">"Il y a un jour "</string>
+    <string name="row_seven">" hier "</string>
+
 </resources>

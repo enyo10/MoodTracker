@@ -3,7 +3,7 @@ package ch.openclassrooms.enyo1.moodtracker.Controller;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+//import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -53,14 +53,10 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
     public static final int  []rings={R.raw.sad,R.raw.disappointed,R.raw.normal,R.raw.happy,R.raw.super_happy};
 
 
-    /*public static final int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy, R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
-    public static final int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65};
-    public static final int []values={4,5,1,2,3};
-    public static final int  []rings={R.raw.happy,R.raw.super_happy,R.raw.sad,R.raw.disappointed,R.raw.normal};*/
-
     private static int currentMoodId;
-    private static MoodData currentMoodData;
-    private MoodDataManager mMoodDataManager;
+    private  MoodData currentMoodData;
+   // private MoodDataManager mMoodDataManager;
+
 
     private static SharedPreferences mSharedPreferences;
     private static final String PREF_KEY_MOOD_LIST="PREF_KEY_MOOD_LIST";
@@ -75,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
         setContentView(R.layout.activity_main);
 
         mSharedPreferences= getPreferences(MODE_PRIVATE);
-        mMoodDataManager=new MoodDataManager ();
 
        AlarmReceiver.sAlarmBroadcastObserver.addObserver (this);
 

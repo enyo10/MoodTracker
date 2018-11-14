@@ -7,7 +7,6 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,22 +21,10 @@ import static ch.openclassrooms.enyo1.moodtracker.Controller.MainActivity.BUNDLE
 
 public class HistoricActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private RelativeLayout mRelativeLayoutRaw1,mRelativeLayoutRaw2,mRelativeLayoutRaw3,mRelativeLayoutRaw4, mRelativeLayoutRaw5, mRelativeLayoutRaw6,mRelativeLayoutRaw7;
+  //  private RelativeLayout mRelativeLayoutRaw1,mRelativeLayoutRaw2,mRelativeLayoutRaw3,mRelativeLayoutRaw4, mRelativeLayoutRaw5, mRelativeLayoutRaw6,mRelativeLayoutRaw7;
     private ArrayList<RelativeLayout>mRelativeLayouts;
-    private TextView mTextViewRaw1,mTextViewRaw2,mTextViewRaw3,mTextViewRaw4,mTextViewRaw5,mTextViewRaw6,mTextViewRaw7;
-
-    private ImageView mImageView1;
-    private ImageView mImageView2;
-    private ImageView mImageView3;
-    private ImageView mImageView4;
-    private ImageView mImageView5;
-    private ImageView mImageView6;
-    private ImageView mImageView7;
-
     private ArrayList<ImageView>mImageViews;
-
-    private   LinkedList<MoodData> mMoodDataList;
-    private MoodDataManager mMoodDataManager;
+    private LinkedList<MoodData> mMoodDataList;
 
 
     @Override
@@ -45,7 +32,7 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historic);
 
-        mMoodDataManager=new MoodDataManager ();
+        MoodDataManager   mMoodDataManager=new MoodDataManager ();
 
         String jsonString =getIntent ().getStringExtra (BUNDLE_KEY_MOOD_LIST);
         if(jsonString!=null)
@@ -62,6 +49,11 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         mRelativeLayouts=new ArrayList<> ();
         mImageViews=new ArrayList<> ();
         // The linear layout of the historic view.
+        RelativeLayout mRelativeLayoutRaw1,mRelativeLayoutRaw2,mRelativeLayoutRaw3,
+                mRelativeLayoutRaw4, mRelativeLayoutRaw5, mRelativeLayoutRaw6,mRelativeLayoutRaw7;
+
+         ImageView mImageView1,mImageView2, mImageView3, mImageView4, mImageView5, mImageView6, mImageView7;
+
 
         mRelativeLayoutRaw1 = findViewById(R.id.activity_historic_row1);
         mRelativeLayoutRaw2 = findViewById(R.id.activity_historic_row2);
@@ -72,34 +64,13 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         mRelativeLayoutRaw7 = findViewById(R.id.activity_historic_row7);
 
 
-        mRelativeLayouts.add (mRelativeLayoutRaw1);
-        mRelativeLayouts.add (mRelativeLayoutRaw2);
-        mRelativeLayouts.add (mRelativeLayoutRaw3);
-        mRelativeLayouts.add (mRelativeLayoutRaw4);
-        mRelativeLayouts.add (mRelativeLayoutRaw5);
-        mRelativeLayouts.add (mRelativeLayoutRaw6);
         mRelativeLayouts.add (mRelativeLayoutRaw7);
-
-
-
-
-
-        // The text view.
-        mTextViewRaw1=findViewById(R.id.activity_historic_row1_txt);
-        mTextViewRaw2=findViewById(R.id.activity_historic_row2_txt);
-        mTextViewRaw3=findViewById(R.id.activity_historic_row3_txt);
-        mTextViewRaw4=findViewById(R.id.activity_historic_row4_txt);
-        mTextViewRaw5=findViewById(R.id.activity_historic_row5_txt);
-        mTextViewRaw6=findViewById(R.id.activity_historic_row6_txt);
-        mTextViewRaw7=findViewById(R.id.activity_historic_row7_txt);
-
-        mTextViewRaw1.setText ("Il y a une semaine");
-        mTextViewRaw2.setText ("Il y a six jours");
-        mTextViewRaw3.setText ("il y a cinq jours");
-        mTextViewRaw4.setText ("il y a quatre jours");
-        mTextViewRaw5.setText ("Il y a trois jours ");
-        mTextViewRaw6.setText ("avant hier");
-        mTextViewRaw7.setText ("Hier");
+        mRelativeLayouts.add (mRelativeLayoutRaw6);
+        mRelativeLayouts.add (mRelativeLayoutRaw5);
+        mRelativeLayouts.add (mRelativeLayoutRaw4);
+        mRelativeLayouts.add (mRelativeLayoutRaw3);
+        mRelativeLayouts.add (mRelativeLayoutRaw2);
+        mRelativeLayouts.add (mRelativeLayoutRaw1);
 
 
         // The image view
@@ -112,15 +83,13 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         mImageView7 = findViewById(R.id.activity_historic_row7_img);
 
         // Add the image view representing the message text to the list.
-
-        mImageViews.add (mImageView1);
-        mImageViews.add (mImageView2);
-        mImageViews.add (mImageView3);
-        mImageViews.add (mImageView4);
-        mImageViews.add (mImageView5);
-        mImageViews.add (mImageView6);
         mImageViews.add (mImageView7);
-
+        mImageViews.add (mImageView6);
+        mImageViews.add (mImageView5);
+        mImageViews.add (mImageView4);
+        mImageViews.add (mImageView3);
+        mImageViews.add (mImageView2);
+        mImageViews.add (mImageView1);
     }
 
     /**
@@ -134,9 +103,10 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         int ratio;
         int dataListSize;
         MoodData moodData;
-        Collections.reverse (mMoodDataList);
+
 
         if(mMoodDataList!=null) {
+            Collections.reverse (mMoodDataList);
             dataListSize = mMoodDataList.size ();
 
 
@@ -154,9 +124,9 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
                     mImageViews.get (i).setOnClickListener (this);
                 }
 
-               mRelativeLayouts.get (6-i).setBackgroundColor(getResources().getColor(color));
-               mRelativeLayouts.get(6-i).getLayoutParams().width=ratio*screenWidth/5;
-               mRelativeLayouts.get (6-i).setVisibility (View.VISIBLE);
+               mRelativeLayouts.get (i).setBackgroundColor(getResources().getColor(color));
+               mRelativeLayouts.get(i).getLayoutParams().width=ratio*screenWidth/5;
+               mRelativeLayouts.get (i).setVisibility (View.VISIBLE);
             }
         }
         }
@@ -167,6 +137,7 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
 
         int index = Integer.parseInt (v.getTag ().toString ());
+
         MoodData moodData=mMoodDataList.get (index);
 
         Toast.makeText(HistoricActivity.this, ""+ moodData.getMessage (), Toast.LENGTH_LONG).show();
@@ -208,6 +179,5 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
 
         System.out.println("HistoricActivity::onDestroy()");
     }
-
 
 }
