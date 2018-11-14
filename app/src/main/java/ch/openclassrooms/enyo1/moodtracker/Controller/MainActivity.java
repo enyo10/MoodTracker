@@ -43,12 +43,20 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
     private ImageView moodImageView;
     private ImageView historicImageView;
     private ImageView addImageView;
-    public AlarmBroadcastObserver mAlarmBroadcastObserver;
+    private MediaPlayer mMediaPlayer;
 
-    public static final int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy, R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
+    public static final int []mImagesResources={R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal,R.drawable.smiley_happy,R.drawable.smiley_super_happy};
+    public static final int []mColorsResources={R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65,
+            R.color.light_sage,R.color.banana_yellow
+            };
+    public static final int []values={1,2,3,4,5};
+    public static final int  []rings={R.raw.sad,R.raw.disappointed,R.raw.normal,R.raw.happy,R.raw.super_happy};
+
+
+    /*public static final int []mImagesResources={R.drawable.smiley_happy,R.drawable.smiley_super_happy, R.drawable.smiley_sad,R.drawable.smiley_disappointed,R.drawable.smiley_normal};
     public static final int []mColorsResources={R.color.light_sage,R.color.banana_yellow,R.color.faded_red,R.color.warm_grey, R.color.cornflower_blue_65};
     public static final int []values={4,5,1,2,3};
-    public static final int  []rings={R.raw.happy,R.raw.super_happy,R.raw.sad,R.raw.disappointed,R.raw.normal};
+    public static final int  []rings={R.raw.happy,R.raw.super_happy,R.raw.sad,R.raw.disappointed,R.raw.normal};*/
 
     private static int currentMoodId;
     private static MoodData currentMoodData;
@@ -77,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
             currentMoodId=savedInstanceState.getInt(BUNDLE_KEY_CURRENT_MOOD);
 
         }else {
-            currentMoodId=0;
+            currentMoodId=3;
 
         }
         // Initialise the default mood data.
@@ -92,8 +100,8 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
 
         scheduleAlarm();
 
-        MediaPlayer ring= MediaPlayer.create(MainActivity.this,R.raw.disappointed);
-        ring.start();
+        mMediaPlayer= MediaPlayer.create(MainActivity.this,R.raw.happy);
+        mMediaPlayer.start();
     }
 
     @Override
@@ -231,8 +239,8 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
         Log.e("System my " ,""+currentMoodId);
 
         // Initialise the default mood data.
-        currentMoodId = 0;
-        currentMoodData=new MoodData (0);
+        currentMoodId = 3;
+        currentMoodData=new MoodData (currentMoodId);
         updateCurrentView (currentMoodId);
 
         Log.e(" info :" ," Data is save ");
@@ -290,9 +298,13 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
      *        the id off the music to be play. We have it from resources array call, values.
      */
     public void playMusic(int musicId){
+        // If the music is playing, we stop it, and restart.
+        if(mMediaPlayer.isPlaying ())
+            mMediaPlayer.stop ();
 
-        MediaPlayer ring= MediaPlayer.create(MainActivity.this,musicId);
-        ring.start();
+        mMediaPlayer= MediaPlayer.create(MainActivity.this,musicId);
+        mMediaPlayer.start();
+
     }
 
     @Override

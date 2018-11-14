@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodData;
@@ -70,6 +71,7 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         mRelativeLayoutRaw6 = findViewById(R.id.activity_historic_row6);
         mRelativeLayoutRaw7 = findViewById(R.id.activity_historic_row7);
 
+
         mRelativeLayouts.add (mRelativeLayoutRaw1);
         mRelativeLayouts.add (mRelativeLayoutRaw2);
         mRelativeLayouts.add (mRelativeLayoutRaw3);
@@ -79,7 +81,10 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         mRelativeLayouts.add (mRelativeLayoutRaw7);
 
 
-      // The text view.
+
+
+
+        // The text view.
         mTextViewRaw1=findViewById(R.id.activity_historic_row1_txt);
         mTextViewRaw2=findViewById(R.id.activity_historic_row2_txt);
         mTextViewRaw3=findViewById(R.id.activity_historic_row3_txt);
@@ -91,9 +96,11 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         mTextViewRaw1.setText ("Il y a une semaine");
         mTextViewRaw2.setText ("Il y a six jours");
         mTextViewRaw3.setText ("il y a cinq jours");
-        mTextViewRaw4.setText ("il y y quatre jours");
-        mTextViewRaw5.setText ("avant hier.");
-        mTextViewRaw6.setText ("Hier");
+        mTextViewRaw4.setText ("il y a quatre jours");
+        mTextViewRaw5.setText ("Il y a trois jours ");
+        mTextViewRaw6.setText ("avant hier");
+        mTextViewRaw7.setText ("Hier");
+
 
         // The image view
         mImageView1 = findViewById(R.id.activity_historic_row1_img);
@@ -127,6 +134,7 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
         int ratio;
         int dataListSize;
         MoodData moodData;
+        Collections.reverse (mMoodDataList);
 
         if(mMoodDataList!=null) {
             dataListSize = mMoodDataList.size ();
@@ -146,9 +154,9 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
                     mImageViews.get (i).setOnClickListener (this);
                 }
 
-               mRelativeLayouts.get (i).setBackgroundColor(getResources().getColor(color));
-               mRelativeLayouts.get(i).getLayoutParams().width=ratio*screenWidth/5;
-               mRelativeLayouts.get (i).setVisibility (View.VISIBLE);
+               mRelativeLayouts.get (6-i).setBackgroundColor(getResources().getColor(color));
+               mRelativeLayouts.get(6-i).getLayoutParams().width=ratio*screenWidth/5;
+               mRelativeLayouts.get (6-i).setVisibility (View.VISIBLE);
             }
         }
         }
@@ -157,7 +165,6 @@ public class HistoricActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
 
         int index = Integer.parseInt (v.getTag ().toString ());
         MoodData moodData=mMoodDataList.get (index);
