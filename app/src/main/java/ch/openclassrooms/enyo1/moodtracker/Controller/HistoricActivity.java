@@ -21,7 +21,6 @@ import static ch.openclassrooms.enyo1.moodtracker.Controller.MainActivity.BUNDLE
 
 public class HistoricActivity extends AppCompatActivity implements View.OnClickListener {
 
-  //  private RelativeLayout mRelativeLayoutRaw1,mRelativeLayoutRaw2,mRelativeLayoutRaw3,mRelativeLayoutRaw4, mRelativeLayoutRaw5, mRelativeLayoutRaw6,mRelativeLayoutRaw7;
     private ArrayList<RelativeLayout>mRelativeLayouts;
     private ArrayList<ImageView>mImageViews;
     private LinkedList<MoodData> mMoodDataList;

@@ -10,7 +10,6 @@ import ch.openclassrooms.enyo1.moodtracker.Model.Data.AlarmBroadcastObserver;
 
 public final class AlarmReceiver extends BroadcastReceiver {
 
-   // public static final String SAMPLE_EXTRA_DATA="ch.enyo.EXTRA_DATA";
     public static AlarmBroadcastObserver sAlarmBroadcastObserver=new AlarmBroadcastObserver ();
 
     @Override

@@ -3,7 +3,6 @@ package ch.openclassrooms.enyo1.moodtracker.Controller;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-//import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,29 +13,29 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+//import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
-import ch.openclassrooms.enyo1.moodtracker.Model.Data.AlarmBroadcastObserver;
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodData;
 import ch.openclassrooms.enyo1.moodtracker.Model.Data.MoodDataManager;
 import ch.openclassrooms.enyo1.moodtracker.Model.Helper.OnSwipeTouchListener;
 import ch.openclassrooms.enyo1.moodtracker.R;
 
 
-
+/**
+ * The main activity implements a click listener and Observer.
+ * The Observer pattern is used to keep track the alarm receiver.
+ */
 public class MainActivity extends AppCompatActivity implements Observer,View.OnClickListener{
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
 
     private LinearLayout mainLinearLayout;
     private LinearLayout moodImageViewLayout;
@@ -55,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
 
     private static int currentMoodId;
     private  MoodData currentMoodData;
-   // private MoodDataManager mMoodDataManager;
-
 
     private static SharedPreferences mSharedPreferences;
     private static final String PREF_KEY_MOOD_LIST="PREF_KEY_MOOD_LIST";
@@ -70,8 +67,10 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mSharedPreferences= getPreferences(MODE_PRIVATE);
 
+// Add this activity to the observer list.
        AlarmReceiver.sAlarmBroadcastObserver.addObserver (this);
 
         bindViews();
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
     }
 
     /**
-     *
+     *This method to update the view.
      * @param moodId,
      *       The id of the actual mood.
      */
@@ -174,9 +173,11 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
      */
     public void addCustomDialogBox(){
 
-        LayoutInflater layoutInflater =getLayoutInflater();
-        View view;
-        view = layoutInflater.inflate(R.layout.user_input_dialog_box,null);
+
+
+       View view = View.inflate(getBaseContext (),R.layout.user_input_dialog_box,null);
+       // view = layoutInflater.inflate(R.layout.user_input_dialog_box,null);
+
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this);
         final EditText userInputDialogEditText =  view.findViewById(R.id.userInputDialog);
 
@@ -261,15 +262,26 @@ public class MainActivity extends AppCompatActivity implements Observer,View.OnC
 
     public void scheduleAlarm()
     {
-        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra ("ch.enyo.EXTRA_DATA", currentMoodData.getResourceId ());
+        // set alarm to wakeup the device at 24 o'clock.
 
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+       /* Calendar calendar =Calendar.getInstance ();
+        calendar.setTimeInMillis (System.currentTimeMillis ());
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        AlarmManager alarmManager=(AlarmManager) getSystemService (Context.ALARM_SERVICE);
+        Intent i = new Intent(this, AlarmReceiver.class);
+        PendingIntent   alarm_Intent = PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.setInexactRepeating (AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis (),AlarmManager.INTERVAL_DAY,alarm_Intent);
+
+       */
+
+       AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+       Intent intent = new Intent(this, AlarmReceiver.class);
+
+       PendingIntent   alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-// setRepeating() lets you specify a precise custom interval--in this case,
-// 2 minutes.
+      // SetRepeating() lets you specify a precise custom interval--in this case, 2 minutes.
 
         Long time = new GregorianCalendar().getTimeInMillis()+2*60*1000;
 
